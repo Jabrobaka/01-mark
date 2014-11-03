@@ -40,5 +40,17 @@ namespace Markdown_Tests
             
             Assert.That(processedText, Is.StringContaining("_Вот это_"));
         }
+
+        [Test]
+        public void replace_double_underscore_with_strong_tag()
+        {
+            var processor = new MarkdownProcessor();
+            var textWithUnderScore = 
+                "__Двумя символами__ — должен становиться жирным с помощью тега <strong>.";
+
+            var processedText = processor.ReplaceMarkdownWithHtml(textWithUnderScore);
+
+            Assert.That(processedText, Is.StringContaining("<strong>Двумя символами</strong>"));
+        }
     }
 }
