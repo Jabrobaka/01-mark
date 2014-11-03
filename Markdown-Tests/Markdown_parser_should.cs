@@ -9,17 +9,12 @@ namespace Markdown_Tests
         [Test]
         public void start_paragraph_after_double_newlines()
         {
-            var parser = new MarkdownParser();
-            var textWithDoubleNewlines = "\n    \n This is new paragraph!";
+            var parser = new MarkdownProcessor();
+            var textWithDoubleNewlines = "\n    \nThis is new paragraph!";
 
-            var outHtml = parser.Parse(textWithDoubleNewlines);
+            var outHtml = parser.ReplaceMarkdownWithHtml(textWithDoubleNewlines);
 
             Assert.That(outHtml, Is.EqualTo("<p>This is new paragraph!</p>"));
-        }
-
-        public static void Main(string[] args)
-        {
-            
         }
     }
 }
