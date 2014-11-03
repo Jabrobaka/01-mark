@@ -24,9 +24,9 @@ namespace Markdown_Tests
             var textWithUnderScore = "Текст с _землёй-земелькой_ пример";
 
             var processedText = processor.ReplaceMarkdownWithHtml(textWithUnderScore);
-            var containsEmTag = processedText.Contains("<em>землёй-земелькой</em>");
+            var withEmTag = "Текст с <em>землёй-земелькой</em> пример";
 
-            Assert.That(containsEmTag, Is.True);
+            Assert.That(processedText, Is.EqualTo(withEmTag));
         }
     }
 }
