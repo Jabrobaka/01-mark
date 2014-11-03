@@ -4,17 +4,28 @@ using _01_mark;
 namespace Markdown_Tests
 {
     [TestFixture]
-    public class Markdown_parser_should
+    public class Markdown_processor_should
     {
         [Test]
         public void start_paragraph_after_double_newlines()
         {
-            var parser = new MarkdownProcessor();
+            var processor = new MarkdownProcessor();
             var textWithDoubleNewlines = "\n    \nThis is new paragraph!";
 
-            var outHtml = parser.ReplaceMarkdownWithHtml(textWithDoubleNewlines);
+            var processedText = processor.ReplaceMarkdownWithHtml(textWithDoubleNewlines);
 
-            Assert.That(outHtml, Is.EqualTo("<p>This is new paragraph!</p>"));
+            Assert.That(processedText, Is.EqualTo("<p>This is new paragraph!</p>"));
+        }
+
+        [Test]
+        public void replace_underscore_with_em_tag()
+        {
+            var processor = new MarkdownProcessor();
+            var textWithUnderScore = "Текст с _землёй земелькой_ пример";
+
+            var processedText = processor.ReplaceMarkdownWithHtml(textWithUnderScore);
+
+            Assert.That(processedText, Is.EqualTo("Текст с <em>землёй земелькой</em> пример"));
         }
     }
 }
