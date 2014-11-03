@@ -30,14 +30,13 @@ namespace _01_mark
 
         private string ProcessUnderscores(string text)
         {
-            var replacedStrings = Regex.Split(text, @"(_([\W\w]+)_)")
-                .Select(ReplaceUnderscoreWithTag);
+            var replacedStrings = Regex.Replace(text, @"_(.+)_", ReplaceUnderscoreWithTag);
             return string.Join(string.Empty, replacedStrings);
         }
 
-        private string ReplaceUnderscoreWithTag(string toReplace)
+        private string ReplaceUnderscoreWithTag(Match match)
         {
-            var removedUnderScores = toReplace.Substring(1, toReplace.Length - 2);
+            var removedUnderScores = match.Value.Substring(1, match.Length - 2);
             var replacedWithTags = string.Format("<em>{0}</em>", removedUnderScores);
             return replacedWithTags;
         }
