@@ -24,9 +24,21 @@ namespace Markdown_Tests
             var textWithUnderScore = "Текст с _землёй-земелькой_ пример";
 
             var processedText = processor.ReplaceMarkdownWithHtml(textWithUnderScore);
-            var withEmTag = "Текст с <em>землёй-земелькой</em> пример";
+            var withEmTag = "<p>Текст с <em>землёй-земелькой</em> пример</p>";
 
             Assert.That(processedText, Is.EqualTo(withEmTag));
+        }
+
+        [Test]
+        public void avoid_underscore_with_escape_char()
+        {
+            var processor = new MarkdownProcessor();
+            var textWithEscapeUnderscore = 
+                @"\_Вот это\_, не должно выделиться тегом ";
+
+            var processedText = processor.ReplaceMarkdownWithHtml(textWithEscapeUnderscore);
+            
+            Assert.That(processedText, Is.StringContaining("_Вот это_"));
         }
     }
 }

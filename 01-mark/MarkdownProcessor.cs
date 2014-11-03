@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace _01_mark
@@ -16,7 +17,7 @@ namespace _01_mark
             if (string.IsNullOrEmpty(text)) return string.Empty;    
           
             var textWithParagraphs = SetParagraphs(text);
-            var withProcessedUnderscores = ProcessUnderscores(text);
+            var withProcessedUnderscores = ProcessUnderscores(textWithParagraphs);
             return withProcessedUnderscores;
         }
 
@@ -30,14 +31,25 @@ namespace _01_mark
 
         private string ProcessUnderscores(string text)
         {
-            var replacedStrings = Regex.Replace(text, @"_(.+)_", ReplaceUnderscoreWithTag);
+            var replacedStrings = Regex.Replace(text, @"._(.+)_", ReplaceUnderscoreWithTag);
             return string.Join(string.Empty, replacedStrings);
         }
 
         private string ReplaceUnderscoreWithTag(Match match)
         {
-            var removedUnderScores = match.Value.Substring(1, match.Length - 2);
-            var replacedWithTags = string.Format("<em>{0}</em>", removedUnderScores);
+            var stringWithUnderScore = match.Value;
+            var escapeUnderscore = @"\_";
+            if (stringWithUnderScore.StartsWith(escapeUnderscore) && 
+                stringWithUnderScore.EndsWith(escapeUnderscore))
+            {
+                return "_" + 
+                     stringWithUnderScore
+                    .Remove(0, 2)
+                    .Remove(stringWithUnderScore.Length - 4, 2)
+                    + "_";
+            }
+            var removedUnderScores = stringWithUnderScore.Substring(2, match.Length - 3);
+            var replacedWithTags = string.Format(" <em>{0}</em>", removedUnderScores);
             return replacedWithTags;
         }
     }
