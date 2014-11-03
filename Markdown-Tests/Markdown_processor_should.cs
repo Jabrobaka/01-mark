@@ -21,11 +21,12 @@ namespace Markdown_Tests
         public void replace_underscore_with_em_tag()
         {
             var processor = new MarkdownProcessor();
-            var textWithUnderScore = "Текст с _землёй земелькой_ пример";
+            var textWithUnderScore = "Текст с _землёй-земелькой_ пример";
 
             var processedText = processor.ReplaceMarkdownWithHtml(textWithUnderScore);
+            var containsEmTag = processedText.Contains("<em>землёй-земелькой</em>");
 
-            Assert.That(processedText, Is.EqualTo("Текст с <em>землёй земелькой</em> пример"));
+            Assert.That(containsEmTag, Is.True);
         }
     }
 }
