@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace _01_mark
 {
     public class MarkdownProcessor
     {
         private List<Mark> marks;
+
+        private static Dictionary<string, string> htmlRepresentation = new Dictionary<string, string>
+        {
+            {"<", "&lt;"},
+            {">", "&gt;"},
+            {"/", "&quot;"},
+        };
 
         public MarkdownProcessor(Mark mark)
         {
@@ -33,7 +40,13 @@ namespace _01_mark
 
         public string ReplaceMarkdownWithHtml(string text)
         {
+            text = Regex.Replace(text, @"[<>/]", ReplaceSpecialHtmlCharsToCodes);
             return marks.Aggregate(text, (current, mark) => mark.ProcessText(current));
+        }
+
+        private string ReplaceSpecialHtmlCharsToCodes(Match match)
+        {
+            return htmlRepresentation[match.Value];
         }
 
         public string AddEscapesToMarkdown(string text)
