@@ -87,7 +87,7 @@ namespace Markdown_Tests
 
             var processedText = processor.ReplaceMarkdownWithHtml(textWithUnderscoreInsideBacktick);
 
-            Assert.That(processedText, Is.StringContaining("<code>котором _не должно_ появиться</code<"));
+            Assert.That(processedText, Is.StringContaining("<code>котором _не должно_ появиться</code>"));
         }
     }
 }

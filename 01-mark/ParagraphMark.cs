@@ -1,20 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace _01_mark
 {
-    class ParagraphMark : IMark
+    class ParagraphMark : Mark
     {
-        public string ProcessText(string text)
+        protected override string GetRegex()
         {
-            var paragraphs = Regex.Split(text, @"\n\s*\n")
+            return @"\n\s*\n";
+        }
+
+        protected override string GetTag()
+        {
+            return string.Empty;
+        }
+
+        protected override string GetTagPattern()
+        {
+            return "<p>{0}</p>";
+        }
+
+        public override string ProcessText(string text)
+        {
+            var paragraphs = Regex.Split(text, regexPattern)
                 .Where(s => !string.IsNullOrEmpty(s))
-                .Select(s => string.Format("<p>{0}</p>", s));
+                .Select(s => string.Format(tagPattern, s));
             return string.Join(string.Empty, paragraphs);
         }
+
+        
     }
 }

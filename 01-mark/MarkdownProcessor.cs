@@ -1,27 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using NUnit.Framework;
 
 namespace _01_mark
 {
     public class MarkdownProcessor
     {
-        private List<IMark> marks;
+        private List<Mark> marks;
+
+        public MarkdownProcessor(Mark mark)
+        {
+            marks = GetMarks()
+                .Where(m => m.GetType() != mark.GetType())
+                .ToList();
+        }
 
         public MarkdownProcessor()
         {
-            marks = new List<IMark>();
-            marks.Add(new ParagraphMark());
-            marks.Add(new DoubleUnderscoreMark());
-            marks.Add(new SingleUnderscoreMark());
+            marks = GetMarks();
+        }
+
+        private List<Mark> GetMarks()
+        {
+            return new List<Mark>
+            {
+                new ParagraphMark(),
+                new BacktickMark(),
+                new DoubleUnderscoreMark(), 
+                new SingleUnderscoreMark()
+            };
         }
 
         public string ReplaceMarkdownWithHtml(string text)
         {
             return marks.Aggregate(text, (current, mark) => mark.ProcessText(current));
+        }
+
+        public string AddEscapesToMarkdown(string text)
+        {
+            return marks.Aggregate(text, (current, mark) => mark.RoundMarksByEscapes(current));
         }
     }
 }

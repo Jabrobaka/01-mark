@@ -1,6 +1,6 @@
 ﻿namespace _01_mark
 {
-    class DoubleUnderscoreMark : UnderscoreMark
+    class DoubleUnderscoreMark : Mark
     {
         protected override string GetRegex()
         {
