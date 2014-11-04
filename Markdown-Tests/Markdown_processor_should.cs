@@ -26,10 +26,10 @@ namespace Markdown_Tests
         }
 
         [Test]
-        public void make_two_p_in_text_with_two_paragraphs()
+        public void make_two_ps_in_text_with_two_paragraphs()
         {
             var textWithDoubleNewlines = "This is new paragraph!" +
-                                         "\n\nAnd Anothre one";
+                                         "\n\nAnd Another one";
 
             var processedText = processor.ReplaceMarkdownWithHtml(textWithDoubleNewlines);
 
@@ -70,11 +70,13 @@ namespace Markdown_Tests
             Assert.That(processedText, Is.StringContaining("<strong>Двумя символами</strong>"));
         }
 
-        [TestCase("Внутри _выделения <em> может быть __<strong>__ выделение_",
-            "<em>выделения <em> может быть <strong><strong></strong> выделение</em>")]
-        public void process_marks_inside_another_marks(string input, string expected)
+        [Test]
+        public void process_marks_inside_another_marks()
         {
-            var processedText = processor.ReplaceMarkdownWithHtml(input);
+            var text = "Внутри _выделения <em> может быть __<strong>__ выделение_";
+            var expected = "<em>выделения <em> может быть <strong><strong></strong> выделение</em>";
+            
+            var processedText = processor.ReplaceMarkdownWithHtml(text);
 
             Assert.That(processedText, Is.StringContaining(expected));
         }
@@ -112,6 +114,14 @@ namespace Markdown_Tests
             Assert.That(processedText, Is.StringContaining("<code>котором _не должно_ появиться</code>"));
         }
 
-        
+        [Test]
+        public void ignore_unpaired_marks()
+        {
+            var text = "_тут__есть_всякие `непарные символы\nйоу";
+
+            var processed = processor.ReplaceMarkdownWithHtml(text);
+
+            Assert.That(processed, Is.EqualTo("<p>_тут__есть_всякие `непарные символы\nйоу</p>"));
+        }
     }
 }
