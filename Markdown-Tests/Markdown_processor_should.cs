@@ -28,7 +28,7 @@ namespace Markdown_Tests
         [Test]
         public void make_two_ps_in_text_with_two_paragraphs()
         {
-            var textWithDoubleNewlines = "This is new paragraph!" +
+            var textWithDoubleNewlines = "\n\nThis is new paragraph!" +
                                          "\n\nAnd Another one";
 
             var processedText = processor.ReplaceMarkdownWithHtml(textWithDoubleNewlines);
@@ -37,12 +37,22 @@ namespace Markdown_Tests
         }
 
         [Test]
+        public void not_include_in_paragraphs_text_without_double_newlines()
+        {
+            var text = "Этот текст не должен быть в теге";
+
+            var processed = processor.ReplaceMarkdownWithHtml(text);
+
+            Assert.That(processed, Is.Not.StringContaining("<p>"));
+        }
+
+        [Test]
         public void replace_underscore_with_em_tag()
         {
-            var textWithUnderScore = "Текст с _землёй-земелькой_ пример";
+            var textWithUnderScore = "Текст _окруженный с двух сторон_ йоу";
 
             var processedText = processor.ReplaceMarkdownWithHtml(textWithUnderScore);
-            var withEmTag = "<p>Текст с <em>землёй-земелькой</em> пример</p>";
+            var withEmTag = "<p>Текст <em>окруженный с двух сторон</em> йоу</p>";
 
             Assert.That(processedText, Is.EqualTo(withEmTag));
         }
