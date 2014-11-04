@@ -20,7 +20,7 @@ namespace _01_mark
             marks = GetMarks();
         }
 
-        private List<Mark> GetMarks()
+        private static List<Mark> GetMarks()
         {
             return new List<Mark>
             {

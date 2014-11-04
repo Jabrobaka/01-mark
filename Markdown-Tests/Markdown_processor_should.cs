@@ -26,6 +26,17 @@ namespace Markdown_Tests
         }
 
         [Test]
+        public void make_two_p_in_text_with_two_paragraphs()
+        {
+            var textWithDoubleNewlines = "This is new paragraph!" +
+                                         "\n\nAnd Anothre one";
+
+            var processedText = processor.ReplaceMarkdownWithHtml(textWithDoubleNewlines);
+
+            Assert.That(processedText, Is.StringContaining("<p>This is new paragraph!</p>"));
+        }
+
+        [Test]
         public void replace_underscore_with_em_tag()
         {
             var textWithUnderScore = "Текст с _землёй-земелькой_ пример";
@@ -69,6 +80,17 @@ namespace Markdown_Tests
         }
 
         [Test]
+        public void ignore_underscores_inside_text_without_whitespaces()
+        {
+            var text = "Подчерки_внутри_текста__и__цифр_12_3 не считаются выделением";
+
+            var processed = processor.ReplaceMarkdownWithHtml(text);
+
+            Assert.That(processed, Is.Not.StringContaining("em"));
+            Assert.That(processed, Is.Not.StringContaining("strong"));
+        }
+
+        [Test]
         public void replace_backtick_with_code_tag()
         {
             var textWithBackTicks =
@@ -89,5 +111,7 @@ namespace Markdown_Tests
 
             Assert.That(processedText, Is.StringContaining("<code>котором _не должно_ появиться</code>"));
         }
+
+        
     }
 }
