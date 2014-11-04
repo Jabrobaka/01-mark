@@ -15,7 +15,7 @@ namespace _01_mark
 
         protected override string GetTag()
         {
-            return "__";
+            return "__"; 
         }
 
         protected override string GetTagPattern()
