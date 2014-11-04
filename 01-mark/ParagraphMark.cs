@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace _01_mark
 {
@@ -7,7 +6,8 @@ namespace _01_mark
     {
         protected override string GetRegex()
         {
-            return @"\n\s*\n";
+//            return @"\n\s*\n";
+            return @"(\n\s*\n).*?(?=\Z|\1)";
         }
 
         protected override string GetTag()
@@ -20,13 +20,18 @@ namespace _01_mark
             return "<p>{0}</p>";
         }
 
-        public override string ProcessText(string text)
+        protected override string RemoveMark(string stringWithMark)
         {
-            var paragraphs = Regex.Split(text, regexPattern)
-                .Where(s => !string.IsNullOrEmpty(s))
-                .Select(s => string.Format(tagPattern, s));
-            return string.Join(string.Empty, paragraphs);
+            return Regex.Replace(stringWithMark, @"(\n\s*\n)", "");
         }
+
+//        public override string ProcessText(string text)
+//        {
+//            var paragraphs = Regex.Split(text, regexPattern)
+//                .Where(s => !string.IsNullOrEmpty(s))
+//                .Select(s => string.Format(tagPattern, s));
+//            return string.Join(string.Empty, paragraphs);
+//        }
 
         
     }

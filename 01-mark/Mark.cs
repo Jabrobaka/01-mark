@@ -59,7 +59,7 @@ namespace _01_mark
             return tag + withoutEscape + tag;
         }
 
-        private string RemoveMark(string stringWithMark)
+        protected virtual string RemoveMark(string stringWithMark)
         {
             if (ingoreMarkdownInsideMark)
             {

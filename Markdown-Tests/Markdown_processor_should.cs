@@ -52,7 +52,7 @@ namespace Markdown_Tests
             var textWithUnderScore = "Текст _окруженный с двух сторон_ йоу";
 
             var processedText = processor.ReplaceMarkdownWithHtml(textWithUnderScore);
-            var withEmTag = "<p>Текст <em>окруженный с двух сторон</em> йоу</p>";
+            var withEmTag = "Текст <em>окруженный с двух сторон</em> йоу";
 
             Assert.That(processedText, Is.EqualTo(withEmTag));
         }
@@ -85,7 +85,8 @@ namespace Markdown_Tests
         public void process_marks_inside_another_marks()
         {
             var text = "Внутри _выделения <em> может быть __<strong>__ выделение_";
-            var expected = "<em>выделения <em> может быть <strong><strong></strong> выделение</em>";
+            var expected = 
+                "<em>выделения &lt;em&gt; может быть <strong>&lt;strong&gt;</strong> выделение</em>";
             
             var processedText = processor.ReplaceMarkdownWithHtml(text);
 
@@ -142,7 +143,7 @@ namespace Markdown_Tests
 
             var processed = processor.ReplaceMarkdownWithHtml(text);
 
-            Assert.That(processed, Is.EqualTo("<p>_тут__есть_всякие `непарные символы\nйоу</p>"));
+            Assert.That(processed, Is.EqualTo("_тут__есть_всякие `непарные символы\nйоу"));
         }
     }
 }
