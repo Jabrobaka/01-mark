@@ -12,7 +12,7 @@ namespace _01_mark
         {
             {"<", "&lt;"},
             {">", "&gt;"},
-            {"/", "&quot;"},
+            {"/", "&#47;"},
         };
 
         public MarkdownProcessor(Mark mark)
