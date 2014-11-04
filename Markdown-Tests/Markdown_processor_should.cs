@@ -6,10 +6,17 @@ namespace Markdown_Tests
     [TestFixture]
     public class Markdown_processor_should
     {
+        private MarkdownProcessor processor;
+
+        [SetUp]
+        public void init()
+        {
+            processor = new MarkdownProcessor();
+        }
+
         [Test]
         public void start_paragraph_after_double_newlines()
         {
-            var processor = new MarkdownProcessor();
             var textWithDoubleNewlines = "\n    \nThis is new paragraph!";
 
             var processedText = processor.ReplaceMarkdownWithHtml(textWithDoubleNewlines);
@@ -20,7 +27,6 @@ namespace Markdown_Tests
         [Test]
         public void replace_underscore_with_em_tag()
         {
-            var processor = new MarkdownProcessor();
             var textWithUnderScore = "Текст с _землёй-земелькой_ пример";
 
             var processedText = processor.ReplaceMarkdownWithHtml(textWithUnderScore);
@@ -32,7 +38,6 @@ namespace Markdown_Tests
         [Test]
         public void avoid_underscore_with_escape_char()
         {
-            var processor = new MarkdownProcessor();
             var textWithEscapeUnderscore = 
                 @"\_Вот это\_, не должно выделиться тегом ";
 
@@ -44,7 +49,6 @@ namespace Markdown_Tests
         [Test]
         public void replace_double_underscore_with_strong_tag()
         {
-            var processor = new MarkdownProcessor();
             var textWithUnderScore = 
                 "__Двумя символами__ — должен становиться жирным с помощью тега <strong>.";
 
