@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using _01_mark;
 
 namespace Markdown_Tests
@@ -35,11 +36,12 @@ namespace Markdown_Tests
             Assert.That(processedText, Is.EqualTo(withEmTag));
         }
 
-        [Test]
-        public void avoid_underscore_with_escape_char()
+        [TestCase("_")]
+        [TestCase("__")]
+        public void avoid_processing_mark_with_escape_char(String tag)
         {
-            var textWithEscapeUnderscore = 
-                @"\_Вот это\_, не должно выделиться тегом ";
+            var textWithEscapeUnderscore = string.Format(
+                @"\{0}Вот это\{0}, не должно выделиться тегом ", tag);
 
             var processedText = processor.ReplaceMarkdownWithHtml(textWithEscapeUnderscore);
             
@@ -56,5 +58,6 @@ namespace Markdown_Tests
 
             Assert.That(processedText, Is.StringContaining("<strong>Двумя символами</strong>"));
         }
+
     }
 }
