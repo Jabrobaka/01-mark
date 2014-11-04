@@ -4,7 +4,7 @@
     {
         protected override string GetRegex()
         {
-            return @"(?<=[^_])\\{0,1}_{1}[^_](.*)\\{0,1}_{1}";
+            return @"(?<=[\s>.,])\\{0,1}_{1}[^_](.*)\\{0,1}_{1}(?=[\s<.,])";
         }
 
         protected override string GetTag()
