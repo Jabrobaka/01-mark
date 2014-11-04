@@ -59,5 +59,35 @@ namespace Markdown_Tests
             Assert.That(processedText, Is.StringContaining("<strong>Двумя символами</strong>"));
         }
 
+        [TestCase("Внутри _выделения <em> может быть __<strong>__ выделение_",
+            "<em>выделения <em> может быть <strong><strong></strong> выделение</em>")]
+        public void process_marks_inside_another_marks(string input, string expected)
+        {
+            var processedText = processor.ReplaceMarkdownWithHtml(input);
+
+            Assert.That(processedText, Is.StringContaining(expected));
+        }
+
+        [Test]
+        public void replace_backtick_with_code_tag()
+        {
+            var textWithBackTicks =
+                "Текст с `кодом` йоу";
+
+            var processedText = processor.ReplaceMarkdownWithHtml(textWithBackTicks);
+
+            Assert.That(processedText, Is.StringContaining("с <code>кодом</code> "));
+        }
+
+        [Test]
+        public void ignore_markdown_inside_backticks()
+        {
+            var textWithUnderscoreInsideBacktick =
+                "Текст, в `котором _не должно_ появиться` тега <em>";
+
+            var processedText = processor.ReplaceMarkdownWithHtml(textWithUnderscoreInsideBacktick);
+
+            Assert.That(processedText, Is.StringContaining("<code>котором _не должно_ появиться</code<"));
+        }
     }
 }
