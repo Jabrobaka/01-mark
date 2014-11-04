@@ -11,7 +11,7 @@ namespace _01_mark
 
         protected override string GetRegex()
         {
-            return @"(?<=.*)`{1}[^`]*`{1}(?=.*)";
+            return @"(?<=.*)\\{0,1}`{1}[^`]*`{1}(?=.*)";
         }
 
         protected override string GetTag()

@@ -49,6 +49,7 @@ namespace Markdown_Tests
 
         [TestCase("_")]
         [TestCase("__")]
+        [TestCase("`")]
         public void avoid_processing_mark_with_escape_char(String tag)
         {
             var textWithEscapeUnderscore = string.Format(
@@ -56,7 +57,7 @@ namespace Markdown_Tests
 
             var processedText = processor.ReplaceMarkdownWithHtml(textWithEscapeUnderscore);
             
-            Assert.That(processedText, Is.StringContaining("_Вот это_"));
+            Assert.That(processedText, Is.StringContaining(tag + "Вот это" + tag));
         }
 
         [Test]
@@ -112,6 +113,16 @@ namespace Markdown_Tests
             var processedText = processor.ReplaceMarkdownWithHtml(textWithUnderscoreInsideBacktick);
 
             Assert.That(processedText, Is.StringContaining("<code>котором _не должно_ появиться</code>"));
+        }
+
+        [Test]
+        public void ignore_paragraphs_inside_code()
+        {
+            var text = "Текст `с кодом без \n\nлишних` тегов";
+
+            var processed = processor.ReplaceMarkdownWithHtml(text);
+
+            Assert.That(processed, Is.Not.Contains("<p>лишних</p>"));
         }
 
         [Test]
