@@ -15,10 +15,13 @@ namespace Markdown_Tests
             processor = new MarkdownProcessor();
         }
 
-        [Test]
-        public void start_paragraph_after_double_newlines()
+        [TestCase("\n\n")]
+        [TestCase("\n    \n")]
+        [TestCase("\r\n\r\n")]
+        [TestCase("\r\n   \r\n")]
+        public void start_paragraph_after_double_newlines(string newlines)
         {
-            var textWithDoubleNewlines = "\n    \nThis is new paragraph!";
+            var textWithDoubleNewlines = string.Format("{0}This is new paragraph!", newlines);
 
             var processedText = processor.ReplaceMarkdownWithHtml(textWithDoubleNewlines);
 
