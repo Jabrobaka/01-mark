@@ -7,7 +7,8 @@ namespace _01_mark
         protected override string GetRegex()
         {
 //            return @"\n\s*\n";
-            return @"(\n\s*\n).*?(?=\Z|\1)";
+//            return @"(\n\s*\n).*?(?=\Z|\1)";
+            return @"(\r{0,1}\n\s*\r{0,1}\n).*?(?=\Z|\1)";
         }
 
         protected override string GetTag()
@@ -22,7 +23,8 @@ namespace _01_mark
 
         protected override string RemoveMark(string stringWithMark)
         {
-            return Regex.Replace(stringWithMark, @"(\n\s*\n)", "");
+//            return Regex.Replace(stringWithMark, @"(\n\s*\n)", "");
+            return Regex.Replace(stringWithMark, @"(\r{0,1}\n\s*\r{0,1}\n)", "");
         }
 
 //        public override string ProcessText(string text)
