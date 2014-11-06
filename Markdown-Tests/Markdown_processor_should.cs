@@ -31,12 +31,11 @@ namespace Markdown_Tests
         [Test]
         public void make_two_ps_in_text_with_two_paragraphs()
         {
-            var textWithDoubleNewlines = "\n\nThis is new paragraph!" +
-                                         "\n\nAnd Another one";
+            var text = "Не параграф\r\n\r\nПараграф\r\n \r\nПараграф";
 
-            var processedText = processor.ReplaceMarkdownWithHtml(textWithDoubleNewlines);
+            var processedText = processor.ReplaceMarkdownWithHtml(text);
 
-            Assert.That(processedText, Is.StringContaining("<p>This is new paragraph!</p>"));
+            Assert.That(processedText, Is.EqualTo("Не параграф<p>Параграф;</p><p>Параграф</p>"));
         }
 
         [Test]
