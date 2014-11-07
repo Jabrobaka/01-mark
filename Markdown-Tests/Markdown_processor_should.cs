@@ -31,21 +31,21 @@ namespace Markdown_Tests
         [Test]
         public void make_two_ps_in_text_with_two_paragraphs()
         {
-            var text = "Не параграф\r\n\r\nПараграф\r\n \r\nПараграф";
+            var text = "Параграф\r\n\r\nПараграф\r\n \r\nПараграф";
 
             var processedText = processor.ReplaceMarkdownWithHtml(text);
 
-            Assert.That(processedText, Is.EqualTo("Не параграф<p>Параграф;</p><p>Параграф</p>"));
+            Assert.That(processedText, Is.EqualTo("<p>Параграф</p><p>Параграф</p><p>Параграф</p>"));
         }
 
         [Test]
-        public void not_include_in_paragraphs_text_without_double_newlines()
+        public void round_with_p_tag_text_without_double_newlines()
         {
-            var text = "Этот текст не должен быть в теге";
+            var text = "Этот текст должен быть в теге";
 
             var processed = processor.ReplaceMarkdownWithHtml(text);
 
-            Assert.That(processed, Is.Not.StringContaining("<p>"));
+            Assert.That(processed, Is.EqualTo("<p>Этот текст должен быть в теге</p>"));
         }
 
         [Test]
@@ -54,9 +54,8 @@ namespace Markdown_Tests
             var textWithUnderScore = "Текст _окруженный с двух сторон_ йоу";
 
             var processedText = processor.ReplaceMarkdownWithHtml(textWithUnderScore);
-            var withEmTag = "Текст <em>окруженный с двух сторон</em> йоу";
 
-            Assert.That(processedText, Is.EqualTo(withEmTag));
+            Assert.That(processedText, Is.StringContaining("<em>окруженный с двух сторон</em>"));
         }
 
         [TestCase("_")]
@@ -145,7 +144,7 @@ namespace Markdown_Tests
 
             var processed = processor.ReplaceMarkdownWithHtml(text);
 
-            Assert.That(processed, Is.EqualTo("_тут__есть_всякие `непарные символы\nйоу"));
+            Assert.That(processed, Is.StringContaining("_тут__есть_всякие `непарные символы\nйоу"));
         }
     }
 }
