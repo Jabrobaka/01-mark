@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace _01_mark
 {
-    public class MarkdownProcessor
+    public class MarkdownProcessor : IMarkdownEscapesProcessor
     {
         private List<Mark> marks;
 
@@ -27,14 +29,14 @@ namespace _01_mark
             marks = GetMarks();
         }
 
-        private static List<Mark> GetMarks()
+        private List<Mark> GetMarks()
         {
             return new List<Mark>
             {
-                new ParagraphMark(),
-                new BacktickMark(),
-                new DoubleUnderscoreMark(), 
-                new SingleUnderscoreMark()
+                new ParagraphMark(this),
+                new BacktickMark(this),
+                new DoubleUnderscoreMark(this), 
+                new SingleUnderscoreMark(this)
             };
         }
 
@@ -49,9 +51,17 @@ namespace _01_mark
             return htmlRepresentation[match.Value];
         }
 
-        public string AddEscapesToMarkdown(string text)
+        public string AddEscapesToMarkdown(string text, IEnumerable<Type> ignoreMarks)
         {
-            return marks.Aggregate(text, (current, mark) => mark.RoundMarksByEscapes(current));
+            ignoreMarks = ignoreMarks ?? Enumerable.Empty<Type>();
+            return marks
+                .Where(mark => !ignoreMarks.Contains(mark.GetType()))
+                .Aggregate(text, (current, mark) => mark.RoundMarksByEscapes(current));
         }
+    }
+
+    public interface IMarkdownEscapesProcessor
+    {
+        string AddEscapesToMarkdown(string text, IEnumerable<Type> ignoreMarks = null);
     }
 }

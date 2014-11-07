@@ -2,6 +2,10 @@
 {
     class SingleUnderscoreMark : Mark
     {
+        public SingleUnderscoreMark(IMarkdownEscapesProcessor escapesProcessor) : base(escapesProcessor)
+        {
+        }
+
         protected override string GetRegex()
         {
             return @"(?<=\s|\A|>)+\\{0,1}_{1}[^_]+_(?!_)";

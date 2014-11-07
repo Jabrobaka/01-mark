@@ -2,6 +2,10 @@
 {
     class DoubleUnderscoreMark : Mark
     {
+        public DoubleUnderscoreMark(IMarkdownEscapesProcessor escapesProcessor) : base(escapesProcessor)
+        {
+        }
+
         protected override string GetRegex()
         {
             return @"(?<!_|\w)+\\{0,1}_{2}[^_]+_{2}(?!\w)";

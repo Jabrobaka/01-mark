@@ -5,6 +5,10 @@ namespace _01_mark
 {
     class ParagraphMark : Mark
     {
+        public ParagraphMark(IMarkdownEscapesProcessor markdownEscapesProcessor) : base(markdownEscapesProcessor)
+        {
+        }
+
         protected override string GetRegex()
         {
 //            return @"\n\s*\n";

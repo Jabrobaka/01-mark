@@ -9,9 +9,11 @@ namespace _01_mark
         protected string tagPattern;
         protected char escape = '\\';
         protected bool ingoreMarkdownInsideMark = false;
+        private IMarkdownEscapesProcessor escapesProcessor;
 
-        protected Mark()
+        protected Mark(IMarkdownEscapesProcessor escapesProcessor)
         {
+            this.escapesProcessor = escapesProcessor;
             tagPattern = GetTagPattern();
             tag = GetTag();
             regexPattern = GetRegex();
@@ -61,13 +63,16 @@ namespace _01_mark
 
         protected virtual string RemoveMark(string stringWithMark)
         {
+            var withoutMark = stringWithMark
+                .Substring(tag.Length, stringWithMark.Length - tag.Length * 2);
+
             if (ingoreMarkdownInsideMark)
             {
-                stringWithMark = new MarkdownProcessor(this)
-                    .AddEscapesToMarkdown(stringWithMark);
+                return escapesProcessor
+                    .AddEscapesToMarkdown(withoutMark);
             }
-            return stringWithMark
-                .Substring(tag.Length, stringWithMark.Length - tag.Length * 2);
+
+            return withoutMark;
         }
 
         private string RoundByEscapes(Match match)

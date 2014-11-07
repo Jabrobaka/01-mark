@@ -4,7 +4,7 @@ namespace _01_mark
 {
     class BacktickMark : Mark
     {
-        public BacktickMark()
+        public BacktickMark(IMarkdownEscapesProcessor escapesProcessor) : base(escapesProcessor)
         {
             ingoreMarkdownInsideMark = true;
         }
