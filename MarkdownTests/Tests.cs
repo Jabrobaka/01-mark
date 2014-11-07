@@ -67,14 +67,14 @@ namespace Markdown_Tests
                 @"\{0}Вот это\{0}, не должно выделиться тегом ", tag);
 
             var processedText = processor.ReplaceMarkdownWithHtml(textWithEscapeUnderscore);
-            
+
             Assert.That(processedText, Is.StringContaining(tag + "Вот это" + tag));
         }
 
         [Test]
         public void replace_double_underscore_with_strong_tag()
         {
-            var textWithUnderScore = 
+            var textWithUnderScore =
                 "__Двумя символами__ — должен становиться жирным с помощью тега <strong>.";
 
             var processedText = processor.ReplaceMarkdownWithHtml(textWithUnderScore);
@@ -86,9 +86,9 @@ namespace Markdown_Tests
         public void process_marks_inside_another_marks()
         {
             var text = "Внутри _выделения <em> может быть __<strong>__ выделение_";
-            var expected = 
+            var expected =
                 "<em>выделения &lt;em&gt; может быть <strong>&lt;strong&gt;</strong> выделение</em>";
-            
+
             var processedText = processor.ReplaceMarkdownWithHtml(text);
 
             Assert.That(processedText, Is.StringContaining(expected));
@@ -147,6 +147,6 @@ namespace Markdown_Tests
             Assert.That(processed, Is.StringContaining("_тут__есть_всякие `непарные символы\nйоу"));
         }
 
-        
+
     }
 }
