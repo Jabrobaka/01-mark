@@ -119,12 +119,6 @@ namespace _01_mark
 
             return tag + withoutEscape + tag;
         }
-
-        public static string RemoveMark(this string stringWithMark, Mark mark)
-        {
-            return stringWithMark
-                .Substring(mark.Tag.Length, stringWithMark.Length - mark.Tag.Length * 2);
-        }
     }
 
 }
