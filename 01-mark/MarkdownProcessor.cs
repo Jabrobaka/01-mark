@@ -35,24 +35,22 @@ namespace _01_mark
 
         public string ReplaceMarkdownWithHtml(string text)
         {
-            text = Regex.Replace(text, @"[<>/]", ReplaceSpecialHtmlCharsToCodes);
-            text = ProcessParagraphs(text);
-            return marks.Aggregate(text, ProcessText);
+            text = Regex.Replace(text, @"[<>/]", match => htmlRepresentation[match.Value]);
+
+            var processedText = ProcessParagraphs(text)
+                .Select(p => marks.Aggregate(p, ProcessText));
+
+            return String.Join(string.Empty, processedText);
         }
 
-        private string ReplaceSpecialHtmlCharsToCodes(Match match)
-        {
-            return htmlRepresentation[match.Value];
-        }
-
-        private string ProcessParagraphs(string text)
+        private IEnumerable<string> ProcessParagraphs(string text)
         {
             const string regexPattern = @"(\r{0,1}\n\s*\r{0,1}\n)";
-            var paragraphs = Regex.Split(text, regexPattern)
+            return Regex.Split(text, regexPattern)
+                .AsParallel()
                 .Select(s => Regex.Replace(s, regexPattern, ""))
                 .Where(s => !string.IsNullOrEmpty(s))
                 .Select(s => string.Format("<p>{0}</p>", s));
-            return string.Join(string.Empty, paragraphs);
         }
 
         private string ProcessText(string text, Mark mark)
@@ -67,12 +65,7 @@ namespace _01_mark
             if (stringWithMark.IsRoundedByEscapes(mark.Tag))
                 return stringWithMark.ReplaceEscapeToNormal(mark.Tag);
 
-            var removedMark = stringWithMark.RemoveMark(mark);
-
-            if (mark.IgnoreMarkdownInsideTag)
-            {
-                removedMark = AddEscapesToMarkdown(removedMark);
-            }
+            var removedMark = RemoveMark(stringWithMark, mark);
 
             return string.Format(mark.TagPattern, removedMark);
         }
@@ -109,7 +102,7 @@ namespace _01_mark
         }       
     }
 
-    public static class StringExtensions
+    static class StringExtensions
     {
         private const char escape = '\\';
 
