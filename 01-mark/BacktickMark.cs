@@ -4,24 +4,24 @@ namespace _01_mark
 {
     class BacktickMark : Mark
     {
-        public BacktickMark(IMarkdownEscapesProcessor escapesProcessor) : base(escapesProcessor)
+        public override bool IgnoreMarkdownInsideTag
         {
-            ingoreMarkdownInsideMark = true;
+            get { return true; }
         }
 
-        protected override string GetRegex()
+        public override string Regex
         {
-            return @"(?<=.*)\\{0,1}`{1}[^`]*`{1}(?=.*)";
+            get { return @"(?<=.*)\\{0,1}`{1}[^`]*`{1}(?=.*)"; }
         }
 
-        protected override string GetTag()
+        public override string Tag
         {
-            return "`";
+            get { return "`"; }
         }
 
-        protected override string GetTagPattern()
+        public override string TagPattern
         {
-            return "<code>{0}</code>";
+            get { return "<code>{0}</code>"; }
         }
     }
 }

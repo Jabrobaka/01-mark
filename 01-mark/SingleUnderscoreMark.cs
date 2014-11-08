@@ -2,23 +2,24 @@
 {
     class SingleUnderscoreMark : Mark
     {
-        public SingleUnderscoreMark(IMarkdownEscapesProcessor escapesProcessor) : base(escapesProcessor)
+        public override bool IgnoreMarkdownInsideTag
         {
+            get { return false; }
         }
 
-        protected override string GetRegex()
+        public override string Regex
         {
-            return @"(?<=\s|\A|>)+\\{0,1}_{1}[^_]+_(?!_)";
+            get { return @"(?<=\s|\A|>)+\\{0,1}_{1}[^_]+_(?!_)"; }
         }
 
-        protected override string GetTag()
+        public override string Tag
         {
-            return "_";
+            get { return "_"; }
         }
 
-        protected override string GetTagPattern()
+        public override string TagPattern
         {
-            return "<em>{0}</em>";
+            get { return "<em>{0}</em>"; }
         }
     }
 }

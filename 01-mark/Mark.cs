@@ -4,82 +4,10 @@ namespace _01_mark
 {
     public abstract class Mark
     {
-        protected string regexPattern;
-        protected string tag;
-        protected string tagPattern;
-        protected char escape = '\\';
-        protected bool ingoreMarkdownInsideMark = false;
-        private IMarkdownEscapesProcessor escapesProcessor;
-
-        protected Mark(IMarkdownEscapesProcessor escapesProcessor)
-        {
-            this.escapesProcessor = escapesProcessor;
-            tagPattern = GetTagPattern();
-            tag = GetTag();
-            regexPattern = GetRegex();
-        }
-
-        protected abstract string GetRegex();
-
-        protected abstract string GetTag();
-
-        protected abstract string GetTagPattern();
-
-        public virtual string ProcessText(string text)
-        {
-            return Regex.Replace(text, regexPattern, ReplaceMarkWithTag, RegexOptions.Singleline);
-        }
-
-        public string RoundMarksByEscapes(string text)
-        {
-            return Regex.Replace(text, regexPattern, RoundByEscapes);
-        }
-
-
-        private string ReplaceMarkWithTag(Match match)
-        {
-            var stringWithMark = match.Value;
-
-            if (IsRoundedByEscapes(stringWithMark))
-                return ReplaceEscapeToNormal(stringWithMark);
-
-            var removedMark = RemoveMark(stringWithMark);
-            return string.Format(tagPattern, removedMark);
-        }
-
-        private bool IsRoundedByEscapes(string stringToCheck)
-        {
-            return stringToCheck[0] == escape &&
-                   stringToCheck[stringToCheck.Length - tag.Length - 1] == escape;
-        }
-
-        private string ReplaceEscapeToNormal(string stringWithEscape)
-        {
-            var withoutEscape = stringWithEscape
-                .Substring(tag.Length + 1, stringWithEscape.Length - tag.Length * 2 - 2);
-            
-            return tag + withoutEscape + tag;
-        }
-
-        protected virtual string RemoveMark(string stringWithMark)
-        {
-            var withoutMark = stringWithMark
-                .Substring(tag.Length, stringWithMark.Length - tag.Length * 2);
-
-            if (ingoreMarkdownInsideMark)
-            {
-                return escapesProcessor
-                    .AddEscapesToMarkdown(withoutMark);
-            }
-
-            return withoutMark;
-        }
-
-        private string RoundByEscapes(Match match)
-        {
-            var stringToReplace = RemoveMark(match.Value);
-            var escapeFormat = "\\" + tag;
-            return escapeFormat + stringToReplace + escapeFormat;
-        }
+        public virtual bool IgnoreMarkdownInsideTag { get { return false; } }
+        public abstract string Regex { get; }
+        public abstract string Tag { get; }
+        public abstract string TagPattern { get; }
+        
     }
 }

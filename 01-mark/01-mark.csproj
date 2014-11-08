@@ -47,7 +47,6 @@
     <Compile Include="BacktickMark.cs" />
     <Compile Include="DoubleUnderscoreMark.cs" />
     <Compile Include="MarkdownProcessor.cs" />
-    <Compile Include="ParagraphMark.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SingleUnderscoreMark.cs" />

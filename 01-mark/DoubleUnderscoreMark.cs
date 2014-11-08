@@ -2,23 +2,19 @@
 {
     class DoubleUnderscoreMark : Mark
     {
-        public DoubleUnderscoreMark(IMarkdownEscapesProcessor escapesProcessor) : base(escapesProcessor)
+        public override string Regex
         {
+            get { return @"(?<!_|\w)+\\{0,1}_{2}[^_]+_{2}(?!\w)"; }
         }
 
-        protected override string GetRegex()
+        public override string Tag
         {
-            return @"(?<!_|\w)+\\{0,1}_{2}[^_]+_{2}(?!\w)";
+            get { return "__"; }
         }
 
-        protected override string GetTag()
+        public override string TagPattern
         {
-            return "__"; 
-        }
-
-        protected override string GetTagPattern()
-        {
-            return "<strong>{0}</strong>";
+            get { return "<strong>{0}</strong>"; }
         }
     }
 }
