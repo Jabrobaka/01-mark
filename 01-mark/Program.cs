@@ -30,6 +30,9 @@ namespace _01_mark
                 .AppendLine("<html>")
                 .AppendLine("<head>")
                 .AppendLine("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />")
+                .AppendLine("</head>")
+                .AppendLine("<body>")
+                .AppendLine("{0}")
                 .AppendLine("</body>")
                 .ToString();
             return string.Format(htmlFilePattern, processedText);
