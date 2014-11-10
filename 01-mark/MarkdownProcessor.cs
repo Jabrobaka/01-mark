@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
+using NUnit.Framework;
 
 namespace _01_mark
 {
@@ -11,21 +13,9 @@ namespace _01_mark
         private List<Mark> marks;
         private const char escape = '\\';
 
-        private static Dictionary<string, string> htmlRepresentation = new Dictionary<string, string>
-        {
-            {"<", "&lt;"},
-            {">", "&gt;"},
-            {"/", "&#47;"},
-        };
-
         public MarkdownProcessor()
         {
-            marks = GetMarks();
-        }
-
-        private static List<Mark> GetMarks()
-        {
-            return new List<Mark>
+            marks = new List<Mark>
             {
                 new BacktickMark(),
                 new DoubleUnderscoreMark(), 
@@ -35,7 +25,7 @@ namespace _01_mark
 
         public string ReplaceMarkdownWithHtml(string text)
         {
-            text = Regex.Replace(text, @"[<>/]", match => htmlRepresentation[match.Value]);
+            text = WebUtility.HtmlEncode(text);
 
             var processedText = ProcessParagraphs(text)
                 .Select(p => marks.Aggregate(p, ProcessText));
@@ -46,8 +36,8 @@ namespace _01_mark
         private IEnumerable<string> ProcessParagraphs(string text)
         {
             const string regexPattern = @"(\r{0,1}\n\s*\r{0,1}\n)";
+
             return Regex.Split(text, regexPattern)
-                .AsParallel()
                 .Select(s => Regex.Replace(s, regexPattern, ""))
                 .Where(s => !string.IsNullOrEmpty(s))
                 .Select(s => string.Format("<p>{0}</p>", s));
@@ -65,21 +55,21 @@ namespace _01_mark
             if (stringWithMark.IsRoundedByEscapes(mark.Tag))
                 return stringWithMark.ReplaceEscapeToNormal(mark.Tag);
 
-            var removedMark = RemoveMark(stringWithMark, mark);
+            var removedMark = RemoveMark(stringWithMark, mark.Tag);
+
+            if (mark.IgnoreMarkdownInsideTag)
+            {
+                removedMark = AddEscapesToMarkdown(removedMark);
+            }
 
             return string.Format(mark.TagPattern, removedMark);
         }
 
-        private string RemoveMark(string stringWithMark, Mark mark)
+        private string RemoveMark(string stringWithMark, string tag)
         {
             var withoutMark = stringWithMark
-                .Substring(mark.Tag.Length, stringWithMark.Length - mark.Tag.Length * 2);
-
-            if (mark.IgnoreMarkdownInsideTag)
-            {
-                return AddEscapesToMarkdown(withoutMark);
-            }
-
+                .Substring(tag.Length, stringWithMark.Length - tag.Length * 2);
+         
             return withoutMark;
         }
 
@@ -91,34 +81,17 @@ namespace _01_mark
 
         private string RoundMarkByEscapes(string text, Mark mark)
         {
-            return Regex.Replace(text, mark.Regex, match => RoundByEscapes(match, mark));
+            return Regex.Replace(text, mark.Regex, match => RoundByEscapes(match, mark.Tag));
         }
 
-        private string RoundByEscapes(Match match, Mark mark)
+        private string RoundByEscapes(Match match, string tag)
         {
-            var stringToReplace = RemoveMark(match.Value, mark);
-            var escapeFormat = "\\" + mark.Tag;
+            var stringToReplace = RemoveMark(match.Value, tag);
+            var escapeFormat = "\\" + tag;
             return escapeFormat + stringToReplace + escapeFormat;
         }       
     }
 
-    static class StringExtensions
-    {
-        private const char escape = '\\';
 
-        public static bool IsRoundedByEscapes(this string stringToCheck, string tag)
-        {
-            return stringToCheck[0] == escape &&
-                   stringToCheck[stringToCheck.Length - tag.Length - 1] == escape;
-        }
-
-        public static string ReplaceEscapeToNormal(this string stringWithEscape, string tag)
-        {
-            var withoutEscape = stringWithEscape
-                .Substring(tag.Length + 1, stringWithEscape.Length - tag.Length * 2 - 2);
-
-            return tag + withoutEscape + tag;
-        }
-    }
 
 }

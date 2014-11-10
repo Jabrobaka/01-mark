@@ -134,7 +134,7 @@ namespace Markdown_Tests
 
             var processed = processor.ReplaceMarkdownWithHtml(text);
 
-            Assert.That(processed, Is.Not.Contains("<p>лишних</p>"));
+            Assert.That(processed, Is.Not.Contains("<p>лишних"));
         }
 
         [Test]
