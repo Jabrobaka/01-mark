@@ -128,7 +128,7 @@ namespace Markdown_Tests
         }
 
         [Test]
-        public void ignore_paragraphs_inside_code()
+        public void ignore_paragraphs_inside_code_tag()
         {
             var text = "Текст `с кодом без \n\nлишних` тегов";
 

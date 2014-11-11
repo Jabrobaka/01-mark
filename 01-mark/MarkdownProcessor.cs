@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using NUnit.Framework;
 
 namespace _01_mark
 {
@@ -12,6 +10,7 @@ namespace _01_mark
     {
         private List<Mark> marks;
         private const char escape = '\\';
+        const string paragraphRegex = @"(\r{0,1}\n\s*\r{0,1}\n)";
 
         public MarkdownProcessor()
         {
@@ -27,18 +26,25 @@ namespace _01_mark
         {
             text = WebUtility.HtmlEncode(text);
 
-            var processedText = ProcessParagraphs(text)
-                .Select(p => marks.Aggregate(p, ProcessText));
+            var processedByMarksWithIgnore = marks
+                .Where(mark => mark.IgnoreMarkdownInsideTag)
+                .Aggregate(text, ProcessText);
 
-            return String.Join(string.Empty, processedText);
+            var withParagraphs = ProcessParagraphs(processedByMarksWithIgnore)
+                .Select(p => marks
+                    .Where(mark => !mark.IgnoreMarkdownInsideTag)
+                    .Aggregate(p, ProcessText));
+
+//            var processedText = ProcessParagraphs(text)
+//                .Select(p => marks.Aggregate(p, ProcessText));
+
+            return String.Join(string.Empty, withParagraphs);
         }
 
         private IEnumerable<string> ProcessParagraphs(string text)
         {
-            const string regexPattern = @"(\r{0,1}\n\s*\r{0,1}\n)";
-
-            return Regex.Split(text, regexPattern)
-                .Select(s => Regex.Replace(s, regexPattern, ""))
+           return Regex.Split(text, paragraphRegex)
+                .Select(s => Regex.Replace(s, paragraphRegex, ""))
                 .Where(s => !string.IsNullOrEmpty(s))
                 .Select(s => string.Format("<p>{0}</p>", s));
         }
@@ -55,14 +61,16 @@ namespace _01_mark
             if (stringWithMark.IsRoundedByEscapes(mark.Tag))
                 return stringWithMark.ReplaceEscapeToNormal(mark.Tag);
 
-            var removedMark = RemoveMark(stringWithMark, mark.Tag);
+            var withRemovedMark = RemoveMark(stringWithMark, mark.Tag);
 
             if (mark.IgnoreMarkdownInsideTag)
             {
-                removedMark = AddEscapesToMarkdown(removedMark);
+                withRemovedMark = AddEscapesToMarkdown(withRemovedMark);
             }
 
-            return string.Format(mark.TagPattern, removedMark);
+            var specialProcessed = mark.SpecialProcessing(withRemovedMark);
+
+            return string.Format(mark.TagPattern, specialProcessed);
         }
 
         private string RemoveMark(string stringWithMark, string tag)

@@ -8,6 +8,11 @@ namespace _01_mark
         public abstract string Regex { get; }
         public abstract string Tag { get; }
         public abstract string TagPattern { get; }
-        
+
+        public virtual string SpecialProcessing(string text)
+        {
+            return text;
+        }
+
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace _01_mark
+﻿namespace _01_mark
 {
     class BacktickMark : Mark
     {
@@ -22,6 +20,11 @@ namespace _01_mark
         public override string TagPattern
         {
             get { return "<code>{0}</code>"; }
+        }
+
+        public override string SpecialProcessing(string text)
+        {
+            return System.Text.RegularExpressions.Regex.Replace(text, @"\n{1}", "<br>");
         }
     }
 }
