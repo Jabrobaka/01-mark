@@ -26,17 +26,10 @@ namespace _01_mark
         {
             text = WebUtility.HtmlEncode(text);
 
-            var processedByMarksWithIgnore = marks
-                .Where(mark => mark.IgnoreMarkdownInsideTag)
+            var processedMarks = marks
                 .Aggregate(text, ProcessText);
 
-            var withParagraphs = ProcessParagraphs(processedByMarksWithIgnore)
-                .Select(p => marks
-                    .Where(mark => !mark.IgnoreMarkdownInsideTag)
-                    .Aggregate(p, ProcessText));
-
-//            var processedText = ProcessParagraphs(text)
-//                .Select(p => marks.Aggregate(p, ProcessText));
+            var withParagraphs = ProcessParagraphs(processedMarks);
 
             return String.Join(string.Empty, withParagraphs);
         }
